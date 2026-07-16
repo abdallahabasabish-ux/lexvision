@@ -1,5 +1,5 @@
-import '.src/assets/css
-/main.css'
+import '.assets/css/main.css'
+
 import App from './App.js'
 import { initI18n } from './i18n.js'
 
