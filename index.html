@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مكتب المحاماة - Legal ERP</title>
+  <title>مكتب المحاماة المتكامل | الحماية القانونية بثقة</title>
+  <meta name="description" content="مكتب محاماة متخصص يقدم خدمات قانونية شاملة في جميع المجالات" />
+  
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Font Awesome -->
@@ -12,11 +14,394 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <!-- Animate.css -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <!-- Tailwind -->
-  <link href="/src/assets/css/main.css" rel="stylesheet" />
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
+  <!-- ======================================== -->
+  <!-- HEADER -->
+  <!-- ======================================== -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="logo">
+          <img src="assets/images/logo.svg" alt="شعار المكتب" class="logo-img" />
+          <span class="logo-text">مكتب المحاماة</span>
+        </div>
+        <nav class="nav">
+          <ul class="nav-list">
+            <li><a href="index.html" class="active">الرئيسية</a></li>
+            <li><a href="about.html">عن المكتب</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="practice-areas.html">مجالات القضايا</a></li>
+            <li><a href="lawyers.html">المحامون</a></li>
+            <li><a href="articles.html">المقالات</a></li>
+            <li><a href="faq.html">الأسئلة الشائعة</a></li>
+            <li><a href="contact.html">اتصل بنا</a></li>
+          </ul>
+        </nav>
+        <div class="header-actions">
+          <a href="login.html" class="btn btn-outline btn-sm">دخول</a>
+          <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================== -->
+  <!-- HERO SECTION -->
+  <!-- ======================================== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-container">
+      <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+        <div class="hero-badge">
+          <i class="fas fa-scale-balanced"></i>
+          <span>خبرة قانونية منذ ٢٠ عاماً</span>
+        </div>
+        <h1 class="hero-title">حماية حقوقك بثقة واحترافية</h1>
+        <p class="hero-subtitle">نقدم حلولاً قانونية متكاملة بفريق من أمهر المحامين، نضمن لك أفضل النتائج في جميع القضايا.</p>
+        <div class="hero-buttons">
+          <a href="consultation.html" class="btn btn-primary btn-lg">
+            <i class="fas fa-calendar-check"></i> احجز استشارة
+          </a>
+          <a href="contact.html" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-phone"></i> تواصل معنا
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" data-count="1250">0</span>
+            <span class="stat-label">قضية منجزة</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="980">0</span>
+            <span class="stat-label">عميل راضٍ</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="45">0</span>
+            <span class="stat-label">محامٍ متخصص</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="15">0</span>
+            <span class="stat-label">جائزة قانونية</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- SERVICES SECTION -->
+  <!-- ======================================== -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">خدماتنا</span>
+        <h2 class="section-title">ما نقدمه لك</h2>
+        <p class="section-desc">نوفر مجموعة شاملة من الخدمات القانونية لتلبية جميع احتياجاتك</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-icon"><i class="fas fa-building"></i></div>
+          <h3>القانون التجاري</h3>
+          <p>تأسيس الشركات، عقود الشراكة، التقاضي التجاري، وحماية العلامات التجارية.</p>
+        </div>
+        <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="service-icon"><i class="fas fa-gavel"></i></div>
+          <h3>القضايا الجنائية</h3>
+          <p>الدفاع في القضايا الجنائية، جرائم الأموال، القضايا الجزائية بجميع أنواعها.</p>
+        </div>
+        <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="service-icon"><i class="fas fa-people-group"></i></div>
+          <h3>قضايا الأسرة</h3>
+          <p>الطلاق، الخلع، النفقة، الحضانة، وجميع قضايا الأحوال الشخصية.</p>
+        </div>
+        <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="service-icon"><i class="fas fa-briefcase"></i></div>
+          <h3>قضايا العمل</h3>
+          <p>نزاعات العمل، عقود التوظيف، إنهاء الخدمات، وتعويضات العمال.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- PRACTICE AREAS -->
+  <!-- ======================================== -->
+  <section class="practice-areas" id="practice-areas">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">مجالات القضايا</span>
+        <h2 class="section-title">نحن نغطي جميع المجالات</h2>
+        <p class="section-desc">فريقنا المتخصص يقدم خدماته في مختلف فروع القانون</p>
+      </div>
+      <div class="practice-grid">
+        <div class="practice-item" data-aos="flip-up" data-aos-delay="100">
+          <i class="fas fa-handshake"></i>
+          <span>قانون العقود</span>
+        </div>
+        <div class="practice-item" data-aos="flip-up" data-aos-delay="150">
+          <i class="fas fa-home"></i>
+          <span>قانون العقارات</span>
+        </div>
+        <div class="practice-item" data-aos="flip-up" data-aos-delay="200">
+          <i class="fas fa-file-invoice"></i>
+          <span>قانون الضرائب</span>
+        </div>
+        <div class="practice-item" data-aos="flip-up" data-aos-delay="250">
+          <i class="fas fa-passport"></i>
+          <span>قانون الهجرة</span>
+        </div>
+        <div class="practice-item" data-aos="flip-up" data-aos-delay="300">
+          <i class="fas fa-car"></i>
+          <span>قانون المرور</span>
+        </div>
+        <div class="practice-item" data-aos="flip-up" data-aos-delay="350">
+          <i class="fas fa-laptop"></i>
+          <span>القانون الرقمي</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- WHY US -->
+  <!-- ======================================== -->
+  <section class="why-us" id="why-us">
+    <div class="container">
+      <div class="why-grid">
+        <div class="why-image" data-aos="fade-right">
+          <img src="assets/images/hero-bg.jpg" alt="لماذا نحن" />
+        </div>
+        <div class="why-content" data-aos="fade-left">
+          <span class="section-tag">لماذا نحن</span>
+          <h2 class="section-title">نسعى لتحقيق العدالة</h2>
+          <p>نحن نؤمن بأن العدالة هي أساس المجتمعات، ونسعى جاهدين لتقديم أفضل الخدمات القانونية لعملائنا.</p>
+          <ul class="why-list">
+            <li><i class="fas fa-check-circle"></i> فريق من أفضل المحامين المتخصصين</li>
+            <li><i class="fas fa-check-circle"></i> حلول قانونية مبتكرة وفعالة</li>
+            <li><i class="fas fa-check-circle"></i> سرية تامة واحترافية عالية</li>
+            <li><i class="fas fa-check-circle"></i> أسعار تنافسية وشفافة</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- STEPS SECTION -->
+  <!-- ======================================== -->
+  <section class="steps" id="steps">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">خطوات العمل</span>
+        <h2 class="section-title">كيف نعمل معك</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item" data-aos="fade-up" data-aos-delay="100">
+          <div class="step-number">01</div>
+          <h3>استشارة أولية</h3>
+          <p>نجتمع بك لفهم قضيتك وتحليلها بدقة</p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="200">
+          <div class="step-number">02</div>
+          <h3>دراسة القضية</h3>
+          <p>فريقنا يدرس القضية ويضع استراتيجية قانونية</p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="300">
+          <div class="step-number">03</div>
+          <h3>التنفيذ والمتابعة</h3>
+          <p>ننفذ الخطة القانونية ونتابع القضية خطوة بخطوة</p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="400">
+          <div class="step-number">04</div>
+          <h3>إتمام القضية</h3>
+          <p>نحرص على تحقيق أفضل نتيجة وننهي القضية بنجاح</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- TESTIMONIALS -->
+  <!-- ======================================== -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">آراء العملاء</span>
+        <h2 class="section-title">ماذا يقولون عنا</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" data-aos="flip-left" data-aos-delay="100">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"تجربة رائعة مع فريق متميز، استطاعوا حل قضيتي بأفضل طريقة ممكنة."</p>
+          <div class="testimonial-author">
+            <img src="assets/images/avatar-1.jpg" alt="عميل" />
+            <div>
+              <strong>أحمد محمد</strong>
+              <span>عميل</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card" data-aos="flip-left" data-aos-delay="200">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"مكتب محاماة على أعلى مستوى، أنصح به بشدة لكل من يبحث عن الاحترافية."</p>
+          <div class="testimonial-author">
+            <img src="assets/images/avatar-2.jpg" alt="عميلة" />
+            <div>
+              <strong>سارة خالد</strong>
+              <span>عميلة</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card" data-aos="flip-left" data-aos-delay="300">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"فريق قانوني مبدع، استطاعوا تحقيق العدالة في قضية صعبة."</p>
+          <div class="testimonial-author">
+            <img src="assets/images/avatar-3.jpg" alt="عميل" />
+            <div>
+              <strong>محمد العتيبي</strong>
+              <span>عميل</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- FAQ SECTION -->
+  <!-- ======================================== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-tag">الأسئلة الشائعة</span>
+        <h2 class="section-title">نحن نجيب على أسئلتك</h2>
+      </div>
+      <div class="faq-grid" data-aos="fade-up">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>ما هي تكلفة الاستشارة القانونية؟</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>تختلف تكلفة الاستشارة حسب نوع القضية وتعقيدها. نقدم استشارة أولية مجانية لتقييم قضيتك وتحديد التكلفة المناسبة.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>كم تستغرق مدة القضية؟</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>تختلف مدة القضية حسب نوعها والمحكمة المختصة، ولكننا نحرص على إنهاء القضايا في أقصر وقت ممكن دون التأثير على جودة العمل.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>هل تقدمون خدمات قانونية للشركات؟</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>نعم، نقدم خدمات قانونية متكاملة للشركات والمؤسسات، بما في ذلك الاستشارات القانونية، صياغة العقود، وحل النزاعات التجارية.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>كيف يمكنني حجز موعد استشارة؟</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>يمكنك حجز موعد من خلال الضغط على زر "احجز استشارة" في الأعلى، أو الاتصال بنا مباشرة على الرقم الموضح في صفحة الاتصال.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- CONSULTATION CTA -->
+  <!-- ======================================== -->
+  <section class="consultation-cta" id="consultation-cta">
+    <div class="container">
+      <div class="cta-box" data-aos="zoom-in">
+        <h2>احصل على استشارة قانونية الآن</h2>
+        <p>فريقنا مستعد للإجابة على جميع استفساراتك وتقديم الدعم القانوني اللازم</p>
+        <a href="consultation.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-calendar-plus"></i> طلب استشارة
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- FOOTER -->
+  <!-- ======================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-logo">
+            <img src="assets/images/logo.svg" alt="شعار المكتب" />
+            <span>مكتب المحاماة</span>
+          </div>
+          <p>نقدم خدمات قانونية شاملة بفريق من أفضل المحامين المتخصصين في جميع المجالات.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="لينكدإن"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" aria-label="يوتيوب"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>روابط سريعة</h4>
+          <ul>
+            <li><a href="about.html">عن المكتب</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="lawyers.html">المحامون</a></li>
+            <li><a href="articles.html">المقالات</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>خدماتنا</h4>
+          <ul>
+            <li><a href="practice-areas.html#corporate">القانون التجاري</a></li>
+            <li><a href="practice-areas.html#criminal">القضايا الجنائية</a></li>
+            <li><a href="practice-areas.html#family">قضايا الأسرة</a></li>
+            <li><a href="practice-areas.html#labor">قضايا العمل</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>اتصل بنا</h4>
+          <ul class="footer-contact">
+            <li><i class="fas fa-phone"></i> +966 12 345 6789</li>
+            <li><i class="fas fa-envelope"></i> info@lawoffice.com</li>
+            <li><i class="fas fa-location-dot"></i> الرياض، المملكة العربية السعودية</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>جميع الحقوق محفوظة &copy; 2025 مكتب المحاماة</p>
+        <div>
+          <a href="privacy-policy.html">سياسة الخصوصية</a>
+          <a href="terms.html">شروط الاستخدام</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================== -->
+  <!-- SCRIPTS -->
+  <!-- ======================================== -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
