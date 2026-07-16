@@ -1,44 +1,32 @@
 // ============================================
-// AUTH MODULE
+// AUTH MODULE - الإصدار المحسن
 // ============================================
 (function() {
   'use strict';
 
-  // Check if Firebase is loaded
+  // التحقق من تحميل Firebase
   if (typeof firebase === 'undefined' || !firebase.auth) {
-    console.error('Firebase Auth is not loaded.');
+    console.error('❌ Firebase Auth is not loaded.');
     return;
   }
 
+  // استخدام المتغيرات العمومية (مهيأة مسبقاً)
   const auth = firebase.auth();
   const db = firebase.firestore ? firebase.firestore() : null;
 
-  // DOM elements for login
-  const loginForm = document.getElementById('loginForm');
-  const loginBtn = document.getElementById('loginBtn');
-  const loginText = document.getElementById('loginText');
-  const loginSpinner = document.getElementById('loginSpinner');
-
-  // DOM elements for register
-  const registerForm = document.getElementById('registerForm');
-  const registerBtn = document.getElementById('registerBtn');
-  const registerText = document.getElementById('registerText');
-  const registerSpinner = document.getElementById('registerSpinner');
-
-  // DOM elements for forgot password
-  const forgotForm = document.getElementById('forgotForm');
-  const resetBtn = document.getElementById('resetBtn');
-  const resetText = document.getElementById('resetText');
-  const resetSpinner = document.getElementById('resetSpinner');
-
-  // Toast
+  // ============================================
+  // عناصر DOM المشتركة
+  // ============================================
   const toastEl = document.getElementById('toast');
 
   // ============================================
-  // Helper: Show Toast
+  // Helper: عرض إشعار (Toast)
   // ============================================
   function showToast(message, type = 'info') {
-    if (!toastEl) return;
+    if (!toastEl) {
+      console.warn('⚠️ Toast element not found.');
+      return;
+    }
     toastEl.textContent = message;
     toastEl.className = 'toast show ' + type;
     clearTimeout(toastEl._timeout);
@@ -48,78 +36,132 @@
   }
 
   // ============================================
-  // Helper: Set Button Loading State
+  // Helper: حالة تحميل الزر
   // ============================================
   function setLoading(btn, textEl, spinnerEl, isLoading) {
-    if (isLoading) {
-      btn.disabled = true;
-      textEl.style.display = 'none';
-      spinnerEl.style.display = 'inline-block';
+    if (!btn || !textEl || !spinnerEl) return;
+    btn.disabled = isLoading;
+    textEl.style.display = isLoading ? 'none' : 'inline';
+    spinnerEl.style.display = isLoading ? 'inline-block' : 'none';
+  }
+
+  // ============================================
+  // HELPER: جلب بيانات المستخدم من Firestore
+  // ============================================
+  async function fetchUserProfile(uid) {
+    if (!db) return null;
+    try {
+      const doc = await db.collection('users').doc(uid).get();
+      if (doc.exists) {
+        return doc.data();
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+    return null;
+  }
+
+  // ============================================
+  // HELPER: تحديث اسم المستخدم في الواجهة
+  // ============================================
+  function updateUserDisplay(user) {
+    const nameDisplay = document.getElementById('userNameDisplay');
+    if (!nameDisplay) return;
+    if (user) {
+      // محاولة جلب الاسم من Firestore أولاً
+      if (db) {
+        db.collection('users').doc(user.uid).get()
+          .then(doc => {
+            if (doc.exists) {
+              const data = doc.data();
+              nameDisplay.textContent = 'مرحباً، ' + (data.fullName || user.displayName || user.email.split('@')[0]);
+            } else {
+              nameDisplay.textContent = 'مرحباً، ' + (user.displayName || user.email.split('@')[0]);
+            }
+          })
+          .catch(() => {
+            nameDisplay.textContent = 'مرحباً، ' + (user.displayName || user.email.split('@')[0]);
+          });
+      } else {
+        nameDisplay.textContent = 'مرحباً، ' + (user.displayName || user.email.split('@')[0]);
+      }
     } else {
-      btn.disabled = false;
-      textEl.style.display = 'inline';
-      spinnerEl.style.display = 'none';
+      nameDisplay.textContent = 'مرحباً، زائر';
     }
   }
 
   // ============================================
   // LOGIN
   // ============================================
+  const loginForm = document.getElementById('loginForm');
   if (loginForm) {
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
+
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      
+
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const rememberMe = document.getElementById('rememberMe').checked;
       const emailError = document.getElementById('emailError');
       const passwordError = document.getElementById('passwordError');
 
-      // Reset errors
-      emailError.classList.remove('show');
-      passwordError.classList.remove('show');
-      document.getElementById('email').classList.remove('error');
-      document.getElementById('password').classList.remove('error');
+      // إعادة تعيين الأخطاء
+      emailError?.classList.remove('show');
+      passwordError?.classList.remove('show');
+      document.getElementById('email')?.classList.remove('error');
+      document.getElementById('password')?.classList.remove('error');
 
-      // Validation
+      // التحقق من صحة الإدخال
       let valid = true;
       if (!email || !email.includes('@')) {
-        emailError.classList.add('show');
-        document.getElementById('email').classList.add('error');
+        if (emailError) emailError.classList.add('show');
+        document.getElementById('email')?.classList.add('error');
         valid = false;
       }
       if (!password || password.length < 6) {
-        passwordError.classList.add('show');
-        document.getElementById('password').classList.add('error');
+        if (passwordError) passwordError.classList.add('show');
+        document.getElementById('password')?.classList.add('error');
         valid = false;
       }
       if (!valid) return;
 
       setLoading(loginBtn, loginText, loginSpinner, true);
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then(function(userCredential) {
+      // تعيين وضع الاستمرارية أولاً (قبل تسجيل الدخول)
+      const persistence = rememberMe 
+        ? firebase.auth.Auth.Persistence.LOCAL 
+        : firebase.auth.Auth.Persistence.SESSION;
+      
+      auth.setPersistence(persistence)
+        .then(() => {
+          return auth.signInWithEmailAndPassword(email, password);
+        })
+        .then((userCredential) => {
           const user = userCredential.user;
-          if (rememberMe) {
-            // Persist session (Firebase handles this via persistence)
-            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-          } else {
-            auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
-          }
           showToast('مرحباً بك، تم تسجيل الدخول بنجاح!', 'success');
-          // Redirect to dashboard
-          setTimeout(function() {
+          // تحديث اسم المستخدم في الواجهة (سيتم بعد التوجيه)
+          setTimeout(() => {
             window.location.href = 'dashboard.html';
           }, 800);
         })
-        .catch(function(error) {
+        .catch((error) => {
           let msg = 'فشل تسجيل الدخول. تأكد من البريد وكلمة المرور.';
-          if (error.code === 'auth/user-not-found') {
-            msg = 'لم يتم العثور على مستخدم بهذا البريد.';
-          } else if (error.code === 'auth/wrong-password') {
-            msg = 'كلمة المرور غير صحيحة.';
-          } else if (error.code === 'auth/too-many-requests') {
-            msg = 'تم تعطيل الحساب مؤقتاً بسبب محاولات كثيرة. حاول لاحقاً.';
+          switch (error.code) {
+            case 'auth/user-not-found':
+              msg = 'لم يتم العثور على مستخدم بهذا البريد.';
+              break;
+            case 'auth/wrong-password':
+              msg = 'كلمة المرور غير صحيحة.';
+              break;
+            case 'auth/too-many-requests':
+              msg = 'تم تعطيل الحساب مؤقتاً بسبب محاولات كثيرة. حاول لاحقاً.';
+              break;
+            case 'auth/invalid-email':
+              msg = 'البريد الإلكتروني غير صحيح.';
+              break;
           }
           showToast(msg, 'error');
           setLoading(loginBtn, loginText, loginSpinner, false);
@@ -130,7 +172,12 @@
   // ============================================
   // REGISTER
   // ============================================
+  const registerForm = document.getElementById('registerForm');
   if (registerForm) {
+    const registerBtn = document.getElementById('registerBtn');
+    const registerText = document.getElementById('registerText');
+    const registerSpinner = document.getElementById('registerSpinner');
+
     registerForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -142,22 +189,22 @@
       const emailError = document.getElementById('regEmailError');
       const passwordError = document.getElementById('regPasswordError');
 
-      // Reset errors
-      nameError.classList.remove('show');
-      emailError.classList.remove('show');
-      passwordError.classList.remove('show');
+      // إعادة تعيين الأخطاء
+      nameError?.classList.remove('show');
+      emailError?.classList.remove('show');
+      passwordError?.classList.remove('show');
 
       let valid = true;
       if (!fullName) {
-        nameError.classList.add('show');
+        if (nameError) nameError.classList.add('show');
         valid = false;
       }
       if (!email || !email.includes('@')) {
-        emailError.classList.add('show');
+        if (emailError) emailError.classList.add('show');
         valid = false;
       }
       if (!password || password.length < 6) {
-        passwordError.classList.add('show');
+        if (passwordError) passwordError.classList.add('show');
         valid = false;
       }
       if (!valid) return;
@@ -165,40 +212,49 @@
       setLoading(registerBtn, registerText, registerSpinner, true);
 
       auth.createUserWithEmailAndPassword(email, password)
-        .then(function(userCredential) {
+        .then((userCredential) => {
           const user = userCredential.user;
-          // Save user data to Firestore
-          if (db) {
-            return db.collection('users').doc(user.uid).set({
-              uid: user.uid,
-              fullName: fullName,
-              email: email,
-              role: role,
-              status: 'pending', // pending approval from owner
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(function() {
-              // Send email verification
+          // تحديث اسم العرض في Authentication
+          return user.updateProfile({ displayName: fullName })
+            .then(() => {
+              // حفظ البيانات في Firestore
+              if (db) {
+                return db.collection('users').doc(user.uid).set({
+                  uid: user.uid,
+                  fullName: fullName,
+                  email: email,
+                  role: role,
+                  status: 'pending', // بانتظار الموافقة من المالك
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+              }
+              return Promise.resolve();
+            })
+            .then(() => {
+              // إرسال بريد تأكيد
               return user.sendEmailVerification();
-            }).then(function() {
+            })
+            .then(() => {
               showToast('تم إنشاء الحساب بنجاح! يرجى تأكيد بريدك الإلكتروني.', 'success');
-              setTimeout(function() {
+              setLoading(registerBtn, registerText, registerSpinner, false);
+              setTimeout(() => {
                 window.location.href = 'login.html';
               }, 2000);
             });
-          } else {
-            showToast('تم إنشاء الحساب ولكن لم يتم حفظ البيانات (Firestore غير متاح).', 'warning');
-            setTimeout(function() {
-              window.location.href = 'login.html';
-            }, 2000);
-          }
         })
-        .catch(function(error) {
+        .catch((error) => {
           let msg = 'فشل إنشاء الحساب.';
-          if (error.code === 'auth/email-already-in-use') {
-            msg = 'هذا البريد الإلكتروني مستخدم بالفعل.';
-          } else if (error.code === 'auth/weak-password') {
-            msg = 'كلمة المرور ضعيفة جداً.';
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              msg = 'هذا البريد الإلكتروني مستخدم بالفعل.';
+              break;
+            case 'auth/weak-password':
+              msg = 'كلمة المرور ضعيفة جداً (يجب أن تكون 6 أحرف على الأقل).';
+              break;
+            case 'auth/invalid-email':
+              msg = 'البريد الإلكتروني غير صحيح.';
+              break;
           }
           showToast(msg, 'error');
           setLoading(registerBtn, registerText, registerSpinner, false);
@@ -209,7 +265,12 @@
   // ============================================
   // FORGOT PASSWORD
   // ============================================
+  const forgotForm = document.getElementById('forgotForm');
   if (forgotForm) {
+    const resetBtn = document.getElementById('resetBtn');
+    const resetText = document.getElementById('resetText');
+    const resetSpinner = document.getElementById('resetSpinner');
+
     forgotForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -217,22 +278,22 @@
       const errorEl = document.getElementById('resetEmailError');
 
       if (!email || !email.includes('@')) {
-        errorEl.style.display = 'block';
+        if (errorEl) errorEl.style.display = 'block';
         return;
       }
-      errorEl.style.display = 'none';
+      if (errorEl) errorEl.style.display = 'none';
 
       setLoading(resetBtn, resetText, resetSpinner, true);
 
       auth.sendPasswordResetEmail(email)
-        .then(function() {
+        .then(() => {
           showToast('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.', 'success');
           setLoading(resetBtn, resetText, resetSpinner, false);
-          setTimeout(function() {
+          setTimeout(() => {
             window.location.href = 'login.html';
           }, 3000);
         })
-        .catch(function(error) {
+        .catch((error) => {
           let msg = 'فشل إرسال رابط الاستعادة. تأكد من البريد الإلكتروني.';
           if (error.code === 'auth/user-not-found') {
             msg = 'لا يوجد مستخدم بهذا البريد الإلكتروني.';
@@ -244,50 +305,86 @@
   }
 
   // ============================================
-  // AUTO-REDIRECT IF ALREADY LOGGED IN
+  // مراقبة حالة المصادقة (مركزية)
   // ============================================
-  // Check if current page is login/register/forgot and user is logged in
+  let currentUser = null;
+
+  auth.onAuthStateChanged((user) => {
+    currentUser = user;
+    if (user) {
+      // تحديث اسم المستخدم في جميع الصفحات
+      updateUserDisplay(user);
+    } else {
+      // المستخدم غير مسجل
+      const nameDisplay = document.getElementById('userNameDisplay');
+      if (nameDisplay) nameDisplay.textContent = '';
+    }
+  });
+
+  // ============================================
+  // إعادة توجيه تلقائي للصفحات العامة
+  // ============================================
   const currentPage = window.location.pathname.split('/').pop();
   const publicPages = ['login.html', 'register.html', 'forgot-password.html'];
   if (publicPages.includes(currentPage)) {
-    auth.onAuthStateChanged(function(user) {
+    auth.onAuthStateChanged((user) => {
       if (user) {
-        // Already logged in, redirect to dashboard
+        // مستخدم مسجل الدخول، نعيد توجيهه إلى لوحة التحكم
         window.location.href = 'dashboard.html';
       }
     });
   }
 
   // ============================================
-  // PROTECT DASHBOARD PAGES (will be used by dashboard.js)
+  // دوال عمومية للاستخدام في الصفحات الأخرى
   // ============================================
+
+  // التحقق من المصادقة (Guard)
   window.authGuard = function() {
-    return new Promise(function(resolve, reject) {
-      auth.onAuthStateChanged(function(user) {
-        if (user) {
-          resolve(user);
-        } else {
-          reject('غير مسجل الدخول');
-        }
-      });
+    return new Promise((resolve, reject) => {
+      if (currentUser) {
+        resolve(currentUser);
+      } else {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+          unsubscribe();
+          if (user) {
+            resolve(user);
+          } else {
+            reject('غير مسجل الدخول');
+          }
+        });
+      }
     });
   };
 
-  // ============================================
-  // LOGOUT FUNCTION (available globally)
-  // ============================================
+  // تسجيل الخروج
   window.logout = function() {
-    auth.signOut().then(function() {
-      showToast('تم تسجيل الخروج بنجاح.', 'success');
-      setTimeout(function() {
-        window.location.href = 'login.html';
-      }, 500);
-    }).catch(function(error) {
-      showToast('حدث خطأ أثناء تسجيل الخروج.', 'error');
-    });
+    auth.signOut()
+      .then(() => {
+        showToast('تم تسجيل الخروج بنجاح.', 'success');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 500);
+      })
+      .catch((error) => {
+        console.error('Logout error:', error);
+        showToast('حدث خطأ أثناء تسجيل الخروج.', 'error');
+      });
   };
 
-  // Expose auth object
-  window.firebaseAuth = auth;
+  // جلب المستخدم الحالي
+  window.getCurrentUser = function() {
+    return currentUser;
+  };
 
+  // جلب بيانات المستخدم من Firestore
+  window.getUserProfile = function(uid) {
+    return fetchUserProfile(uid);
+  };
+
+  // تصدير المتغيرات للاستخدام العام
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+
+  console.log('✅ Auth module initialized successfully.');
 })();
