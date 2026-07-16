@@ -1,15 +1,9 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-base: '/<repository-name>/', // مثلاً '/LawOfficeERP/'
-  root: '.',
+  base: '/lexvision/',   // <-- مهم جدًا لوجود الشرطتين المائلتين في البداية والنهاية
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      input: {
-        main: './index.html'
-      }
-    }
   },
   server: {
     port: 3000,
