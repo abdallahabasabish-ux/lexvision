@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إدارة العملاء - مكتب المحاماة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    /* إضافات خاصة بالعملاء */
+    .search-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+    .search-bar input, .search-bar select { padding: 0.6rem 1rem; border: 2px solid var(--gray-200); border-radius: 0.75rem; font-family: inherit; flex: 1; min-width: 150px; }
+    .search-bar input:focus, .search-bar select:focus { outline: none; border-color: var(--secondary); }
+    .toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+    .badge-archived { background: var(--gray-400); color: white; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; }
+    .badge-active { background: var(--success); color: white; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; }
+    /* مودال */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center; z-index: 2000; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--white); border-radius: var(--radius-xl); max-width: 600px; width: 100%;
+      padding: 2rem; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-xl);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .modal-header h3 { margin: 0; font-size: 1.5rem; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-400); }
+    .modal-close:hover { color: var(--danger); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.3rem; font-size: 0.9rem; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 0.7rem 1rem; border: 2px solid var(--gray-200); border-radius: 0.75rem;
+      font-family: inherit; font-size: 0.95rem; transition: var(--transition);
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none; border-color: var(--secondary); box-shadow: 0 0 0 4px rgba(189,157,96,0.15);
+    }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .file-upload-wrapper { position: relative; }
+    .file-upload-wrapper input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+    .file-upload-wrapper .file-label {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1rem; border: 2px dashed var(--gray-300); border-radius: 0.75rem;
+      background: var(--gray-50); color: var(--gray-500); cursor: pointer; transition: var(--transition);
+    }
+    .file-upload-wrapper .file-label:hover { border-color: var(--secondary); background: var(--white); }
+    .file-preview { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .file-preview .file-item { background: var(--gray-100); padding: 0.3rem 0.8rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+    .file-preview .file-item i { color: var(--secondary); }
+    .file-preview .file-item .remove-file { color: var(--danger); cursor: pointer; }
+    .modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+    .btn-secondary:hover { background: var(--gray-300); }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      .form-row { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .search-bar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (مشترك) -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="logo">
+          <img src="assets/images/logo.svg" alt="شعار المكتب" class="logo-img" />
+          <span class="logo-text">مكتب المحاماة</span>
+        </div>
+        <div class="header-actions">
+          <span class="text-sm text-gray-600 ml-4" id="userNameDisplay">مرحباً، أحمد</span>
+          <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button onclick="window.logout()" class="btn btn-outline btn-sm">
+            <i class="fas fa-sign-out-alt"></i> خروج
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-wrapper">
+    <!-- Sidebar (نفسه) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <img src="assets/images/logo.svg" alt="Logo" />
+        <span>القائمة</span>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> لوحة التحكم</a></li>
+        <li><a href="customers.html" class="active"><i class="fas fa-users"></i> العملاء</a></li>
+        <li><a href="cases.html"><i class="fas fa-gavel"></i> القضايا</a></li>
+        <li><a href="sessions.html"><i class="fas fa-calendar-day"></i> الجلسات</a></li>
+        <li><a href="documents.html"><i class="fas fa-folder-open"></i> المستندات</a></li>
+        <li><a href="contracts.html"><i class="fas fa-file-signature"></i> العقود</a></li>
+        <li><a href="consultations.html"><i class="fas fa-headset"></i> الاستشارات</a></li>
+        <li><a href="tasks.html"><i class="fas fa-tasks"></i> المهام</a></li>
+        <li><a href="calendar.html"><i class="fas fa-calendar-alt"></i> التقويم</a></li>
+        <li><a href="notifications.html"><i class="fas fa-bell"></i> الإشعارات</a></li>
+        <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+        <li><a href="accounting.html"><i class="fas fa-coins"></i> المحاسبة</a></li>
+        <li><a href="employees.html"><i class="fas fa-user-tie"></i> الموظفون</a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <button onclick="window.logout()" class="btn btn-outline btn-sm" style="width:100%; justify-content:center;">
+          <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <h2 style="margin-bottom: 0.5rem;">إدارة العملاء</h2>
+      <p style="color: var(--gray-500); margin-bottom: 1.5rem;">إدارة بيانات العملاء، الملفات، والمعلومات الشخصية</p>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="ابحث بالاسم، البريد، أو رقم الهاتف" />
+          <select id="filterStatus">
+            <option value="all">جميع الحالات</option>
+            <option value="active">نشط</option>
+            <option value="archived">مؤرشف</option>
+          </select>
+          <button class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> بحث</button>
+          <button class="btn btn-outline" id="clearSearchBtn"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
+        <div>
+          <button class="btn btn-primary" id="addCustomerBtn"><i class="fas fa-user-plus"></i> إضافة عميل</button>
+          <button class="btn btn-outline" id="printBtn"><i class="fas fa-print"></i> طباعة</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table class="table" id="customersTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الاسم</th>
+              <th>البريد الإلكتروني</th>
+              <th>رقم الهاتف</th>
+              <th>الحالة</th>
+              <th>تاريخ الإضافة</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="customersTableBody">
+            <!-- سيتم ملؤها بواسطة JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination (بسيط) -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+        <span id="paginationInfo" style="color: var(--gray-500); font-size: 0.9rem;"></span>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-outline btn-sm" id="prevPageBtn"><i class="fas fa-chevron-right"></i> السابق</button>
+          <button class="btn btn-outline btn-sm" id="nextPageBtn">التالي <i class="fas fa-chevron-left"></i></button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================
+       MODAL (إضافة / تعديل عميل)
+  ============================================ -->
+  <div class="modal-overlay" id="customerModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">إضافة عميل جديد</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <form id="customerForm" novalidate>
+        <input type="hidden" id="customerId" value="" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="custName">الاسم الكامل *</label>
+            <input type="text" id="custName" placeholder="أحمد محمد" required />
+          </div>
+          <div class="form-group">
+            <label for="custEmail">البريد الإلكتروني</label>
+            <input type="email" id="custEmail" placeholder="example@domain.com" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="custPhone">رقم الهاتف *</label>
+            <input type="text" id="custPhone" placeholder="+966 50 123 4567" required />
+          </div>
+          <div class="form-group">
+            <label for="custIdNumber">رقم الهوية / الإقامة</label>
+            <input type="text" id="custIdNumber" placeholder="رقم الهوية" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="custAddress">العنوان</label>
+          <input type="text" id="custAddress" placeholder="الرياض، المملكة العربية السعودية" />
+        </div>
+        <div class="form-group">
+          <label for="custNotes">ملاحظات</label>
+          <textarea id="custNotes" placeholder="أي معلومات إضافية عن العميل..."></textarea>
+        </div>
+
+        <!-- رفع الملفات -->
+        <div class="form-group">
+          <label>المستندات المرفقة</label>
+          <div class="file-upload-wrapper">
+            <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+            <div class="file-label">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span>اختر ملفات (PDF, Word, Excel, صور)</span>
+            </div>
+          </div>
+          <div class="file-preview" id="filePreview"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="modalCancel">إلغاء</button>
+          <button type="submit" class="btn btn-primary" id="modalSubmit">
+            <span id="modalSubmitText">حفظ</span>
+            <i class="fas fa-spinner fa-spin" id="modalSpinner" style="display:none;"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase + Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/pages/customers.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
