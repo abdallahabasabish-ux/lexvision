@@ -1,4 +1,4 @@
-import './assets/css/main.css'   // <-- تم تصحيح المسار
+import 'https://abdallahabasabish-ux.github.io/lexvision/assets/css/main.css'   // <-- تم تصحيح المسار
 import App from './App.js'
 import { initI18n } from './i18n.js'
 
