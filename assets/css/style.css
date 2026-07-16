@@ -807,3 +807,100 @@ img {
   .stat-number { font-size: 1.5rem; }
   .practice-grid { grid-template-columns: 1fr 1fr; }
 }
+/* ============================================
+   DASHBOARD & AUTH ADDITIONS
+   ============================================ */
+:root {
+  --primary-dark: #2a2829;
+  --shadow-xl: 0 30px 80px rgba(0,0,0,0.12);
+}
+
+/* تحسين التوست */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-medium);
+  font-weight: 600;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+}
+.toast.success {
+  background: var(--success);
+}
+.toast.error {
+  background: var(--danger);
+}
+.toast.warning {
+  background: var(--warning);
+}
+
+/* تحسين الهيدر الداخلي */
+.header .container {
+  max-width: 100%;
+  padding: 0 1.5rem;
+}
+.header .header-inner {
+  height: var(--header-height, 70px);
+}
+
+/* تنسيق الجداول العامة */
+.table-wrapper {
+  overflow-x: auto;
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  padding: 0.5rem;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.table th {
+  text-align: right;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--gray-200);
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+.table tr:hover td {
+  background: var(--gray-50);
+}
+
+/* أزرار الإجراءات */
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icon:hover {
+  background: var(--gray-100);
+  color: var(--primary);
+}
+.btn-icon.danger:hover {
+  background: rgba(220,38,38,0.1);
+  color: var(--danger);
+}
